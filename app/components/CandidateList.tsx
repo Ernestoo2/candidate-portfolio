@@ -1,10 +1,14 @@
 "use client";
+
+import React from "react";
 import CandidateCard from "./CandidateCard";
 import { useEffect, useState } from "react";
 import { FaFileExport } from "react-icons/fa";
 import { Candidate, ExperienceLevel } from "../types/candidate";
 
-export default function CandidateList() {
+type SortField = "name" | "experienceLevel";
+
+const CandidateList: React.FC = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [filteredCandidates, setFilteredCandidates] = useState<Candidate[]>([]);
   const [sortBy, setSortBy] = useState<SortField>("name");
@@ -166,7 +170,7 @@ export default function CandidateList() {
               Experience Level
             </label>
             <select
-            title="filter"
+              title="filter"
               value={filterExperience}
               onChange={(e) =>
                 setFilterExperience(e.target.value as ExperienceLevel | "")
@@ -230,4 +234,6 @@ export default function CandidateList() {
       </button>
     </div>
   );
-}
+};
+
+export default CandidateList;
