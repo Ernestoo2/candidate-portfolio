@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "GitHub Profile Viewer",
-  description: "Search and view GitHub profiles and repositories",
+  title: "Candidate Portfolio Dashboard",
+  description: "View and manage candidate portfolios",
 };
 
 export default function RootLayout({
@@ -15,9 +15,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} antialiased`}>
+        <main className="min-h-screen bg-background text-foreground">
           {children}
         </main>
       </body>
