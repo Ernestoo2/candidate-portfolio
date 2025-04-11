@@ -1,8 +1,11 @@
 "use client";
+import React from "react";
 import CandidateCard from "./CandidateCard";
 import { useEffect, useState } from "react";
 import { FaFileExport } from "react-icons/fa";
 import { Candidate, ExperienceLevel } from "../types/candidate";
+
+type SortField = "name" | "experienceLevel";
 
 export default function CandidateList() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -53,10 +56,7 @@ export default function CandidateList() {
         return a.fullName.localeCompare(b.fullName);
       } else {
         const experienceOrder = { Junior: 1, Mid: 2, Senior: 3 };
-        return (
-          experienceOrder[a.experienceLevel] -
-          experienceOrder[b.experienceLevel]
-        );
+        return experienceOrder[a.experienceLevel] - experienceOrder[b.experienceLevel];
       }
     });
 
@@ -84,6 +84,11 @@ export default function CandidateList() {
     const updatedCandidates = candidates.filter((c) => c.id !== id);
     setCandidates(updatedCandidates);
     localStorage.setItem("candidates", JSON.stringify(updatedCandidates));
+  };
+
+  const handleEdit = (candidate: Candidate) => {
+    // TODO: Implement edit functionality
+    console.log("Edit candidate:", candidate);
   };
 
   // Calculate experience level summary
@@ -215,6 +220,7 @@ export default function CandidateList() {
           <CandidateCard
             key={candidate.id}
             candidate={candidate}
+            onEdit={handleEdit}
             onDelete={handleDelete}
           />
         ))}
