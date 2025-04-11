@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function LoadingState() {
   return (
@@ -27,5 +27,5 @@ export default function LoadingState() {
         ))}
       </div>
     </div>
-  )
-} 
+  );
+}

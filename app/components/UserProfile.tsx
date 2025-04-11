@@ -1,55 +1,57 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import Image from 'next/image'
-import { FaMapMarkerAlt, FaUsers, FaLink } from 'react-icons/fa'
-import LoadingState from './LoadingState'
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { FaMapMarkerAlt, FaUsers, FaLink } from "react-icons/fa";
+import LoadingState from "./LoadingState";
 
 interface GitHubUser {
-  avatar_url: string
-  name: string | null
-  login: string
-  location: string | null
-  bio: string | null
-  followers: number
-  following: number
-  html_url: string
+  avatar_url: string;
+  name: string | null;
+  login: string;
+  location: string | null;
+  bio: string | null;
+  followers: number;
+  following: number;
+  html_url: string;
 }
 
 interface UserProfileProps {
-  username: string
+  username: string;
 }
 
 export default function UserProfile({ username }: UserProfileProps) {
-  const [user, setUser] = useState<GitHubUser | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState<GitHubUser | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        setIsLoading(true)
-        setError(null)
+        setIsLoading(true);
+        setError(null);
 
         // Check cache first
-        const cachedData = localStorage.getItem(`user-${username}`)
+        const cachedData = localStorage.getItem(`user-${username}`);
         if (cachedData) {
-          const { data, timestamp } = JSON.parse(cachedData)
+          const { data, timestamp } = JSON.parse(cachedData);
           // Cache for 5 minutes
           if (Date.now() - timestamp < 5 * 60 * 1000) {
-            setUser(data)
-            setIsLoading(false)
-            return
+            setUser(data);
+            setIsLoading(false);
+            return;
           }
         }
 
-        const response = await fetch(`https://api.github.com/users/${username}`)
+        const response = await fetch(
+          `https://api.github.com/users/${username}`,
+        );
         if (!response.ok) {
-          throw new Error('User not found')
+          throw new Error("User not found");
         }
 
-        const data = await response.json()
-        setUser(data)
+        const data = await response.json();
+        setUser(data);
 
         // Cache the result
         localStorage.setItem(
@@ -57,21 +59,23 @@ export default function UserProfile({ username }: UserProfileProps) {
           JSON.stringify({
             data,
             timestamp: Date.now(),
-          })
-        )
+          }),
+        );
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch user data')
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch user data",
+        );
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    fetchUser()
-  }, [username])
+    fetchUser();
+  }, [username]);
 
-  if (isLoading) return <LoadingState />
-  if (error) return <div className="text-red-500 text-center">{error}</div>
-  if (!user) return null
+  if (isLoading) return <LoadingState />;
+  if (error) return <div className="text-red-500 text-center">{error}</div>;
+  if (!user) return null;
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
@@ -105,7 +109,9 @@ export default function UserProfile({ username }: UserProfileProps) {
 
             <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
               <FaUsers />
-              <span>{user.followers} followers · {user.following} following</span>
+              <span>
+                {user.followers} followers · {user.following} following
+              </span>
             </div>
 
             <a
@@ -121,5 +127,5 @@ export default function UserProfile({ username }: UserProfileProps) {
         </div>
       </div>
     </div>
-  )
-} 
+  );
+}

@@ -1,36 +1,38 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { FaSearch, FaHistory } from 'react-icons/fa'
+import { useState, useEffect } from "react";
+import { FaSearch, FaHistory } from "react-icons/fa";
 
 interface SearchBarProps {
-  onSearch: (username: string) => void
+  onSearch: (username: string) => void;
 }
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
-  const [username, setUsername] = useState('')
-  const [searchHistory, setSearchHistory] = useState<string[]>([])
+  const [username, setUsername] = useState("");
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   useEffect(() => {
     // Load search history from localStorage
-    const history = localStorage.getItem('searchHistory')
+    const history = localStorage.getItem("searchHistory");
     if (history) {
-      setSearchHistory(JSON.parse(history))
+      setSearchHistory(JSON.parse(history));
     }
-  }, [])
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!username.trim()) return
+    e.preventDefault();
+    if (!username.trim()) return;
 
     // Update search history
-    const newHistory = [username, ...searchHistory.filter(item => item !== username)]
-      .slice(0, 5)
-    setSearchHistory(newHistory)
-    localStorage.setItem('searchHistory', JSON.stringify(newHistory))
+    const newHistory = [
+      username,
+      ...searchHistory.filter((item) => item !== username),
+    ].slice(0, 5);
+    setSearchHistory(newHistory);
+    localStorage.setItem("searchHistory", JSON.stringify(newHistory));
 
-    onSearch(username)
-  }
+    onSearch(username);
+  };
 
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -61,8 +63,8 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
               <button
                 key={item}
                 onClick={() => {
-                  setUsername(item)
-                  onSearch(item)
+                  setUsername(item);
+                  onSearch(item);
                 }}
                 className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
               >
@@ -73,5 +75,5 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         </div>
       )}
     </div>
-  )
-} 
+  );
+}

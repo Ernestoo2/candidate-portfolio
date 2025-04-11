@@ -1,60 +1,61 @@
-'use client'
-
-import { useEffect, useState } from 'react'
-import { FaStar, FaCodeBranch, FaSort, FaFilter } from 'react-icons/fa'
-import LoadingState from './LoadingState'
+"use client";
+import LoadingState from "./LoadingState";
+import { useEffect, useState } from "react";
+import { FaCodeBranch, FaStar } from "react-icons/fa";
 
 interface Repository {
-  id: number
-  name: string
-  description: string | null
-  html_url: string
-  stargazers_count: number
-  forks_count: number
-  language: string | null
+  id: number;
+  name: string;
+  description: string | null;
+  html_url: string;
+  stargazers_count: number;
+  forks_count: number;
+  language: string | null;
 }
 
 interface RepositoryListProps {
-  username: string
+  username: string;
 }
 
-type SortOption = 'stars' | 'name' | 'updated'
+type SortOption = "stars" | "name" | "updated";
 
 export default function RepositoryList({ username }: RepositoryListProps) {
-  const [repos, setRepos] = useState<Repository[]>([])
-  const [filteredRepos, setFilteredRepos] = useState<Repository[]>([])
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [sortBy, setSortBy] = useState<SortOption>('stars')
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('all')
-  const [languages, setLanguages] = useState<Set<string>>(new Set())
+  const [repos, setRepos] = useState<Repository[]>([]);
+  const [filteredRepos, setFilteredRepos] = useState<Repository[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [sortBy, setSortBy] = useState<SortOption>("stars");
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("all");
+  const [languages, setLanguages] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const fetchRepos = async () => {
       try {
-        setIsLoading(true)
-        setError(null)
+        setIsLoading(true);
+        setError(null);
 
         // Check cache first
-        const cachedData = localStorage.getItem(`repos-${username}`)
+        const cachedData = localStorage.getItem(`repos-${username}`);
         if (cachedData) {
-          const { data, timestamp } = JSON.parse(cachedData)
+          const { data, timestamp } = JSON.parse(cachedData);
           // Cache for 5 minutes
           if (Date.now() - timestamp < 5 * 60 * 1000) {
-            setRepos(data)
-            updateLanguages(data)
-            return
+            setRepos(data);
+            updateLanguages(data);
+            return;
           }
         }
 
-        const response = await fetch(`https://api.github.com/users/${username}/repos?per_page=100`)
+        const response = await fetch(
+          `https://api.github.com/users/${username}/repos?per_page=100`,
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch repositories')
+          throw new Error("Failed to fetch repositories");
         }
 
-        const data = await response.json()
-        setRepos(data)
-        updateLanguages(data)
+        const data = await response.json();
+        setRepos(data);
+        updateLanguages(data);
 
         // Cache the result
         localStorage.setItem(
@@ -62,54 +63,56 @@ export default function RepositoryList({ username }: RepositoryListProps) {
           JSON.stringify({
             data,
             timestamp: Date.now(),
-          })
-        )
+          }),
+        );
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch repositories')
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch repositories",
+        );
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    fetchRepos()
-  }, [username])
+    fetchRepos();
+  }, [username]);
 
   useEffect(() => {
     // Filter and sort repositories
-    let filtered = [...repos]
+    let filtered = [...repos];
 
     // Apply language filter
-    if (selectedLanguage !== 'all') {
-      filtered = filtered.filter(repo => repo.language === selectedLanguage)
+    if (selectedLanguage !== "all") {
+      filtered = filtered.filter((repo) => repo.language === selectedLanguage);
     }
 
     // Apply sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case 'stars':
-          return b.stargazers_count - a.stargazers_count
-        case 'name':
-          return a.name.localeCompare(b.name)
+        case "stars":
+          return b.stargazers_count - a.stargazers_count;
+        case "name":
+          return a.name.localeCompare(b.name);
         default:
-          return 0
+          return 0;
       }
-    })
+    });
 
     // Limit to top 10 repositories
-    setFilteredRepos(filtered.slice(0, 10))
-  }, [repos, sortBy, selectedLanguage])
+    setFilteredRepos(filtered.slice(0, 10));
+  }, [repos, sortBy, selectedLanguage]);
 
   const updateLanguages = (repositories: Repository[]) => {
     const langs = new Set(
       repositories
-        .map(repo => repo.language)
-        .filter((lang): lang is string => lang !== null)
-    )
-    setLanguages(langs)
-  }
+        .map((repo) => repo.language)
+        .filter((lang): lang is string => lang !== null),
+    );
+    setLanguages(langs);
+  };
 
-  if (isLoading) return <LoadingState />
-  if (error) return <div className="text-red-500 text-center">{error}</div>
+  if (isLoading) return <LoadingState />;
+  if (error) return <div className="text-red-500 text-center">{error}</div>;
 
   return (
     <div className="space-y-4">
@@ -117,20 +120,24 @@ export default function RepositoryList({ username }: RepositoryListProps) {
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
           Repositories
         </h3>
-        
+
         <div className="flex flex-wrap gap-2">
           <select
+            title="select language"
             value={selectedLanguage}
             onChange={(e) => setSelectedLanguage(e.target.value)}
             className="px-3 py-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-sm"
           >
             <option value="all">All Languages</option>
-            {Array.from(languages).map(lang => (
-              <option key={lang} value={lang}>{lang}</option>
+            {Array.from(languages).map((lang) => (
+              <option key={lang} value={lang}>
+                {lang}
+              </option>
             ))}
           </select>
 
           <select
+            title="sort"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as SortOption)}
             className="px-3 py-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-sm"
@@ -142,7 +149,7 @@ export default function RepositoryList({ username }: RepositoryListProps) {
       </div>
 
       <div className="grid gap-4">
-        {filteredRepos.map(repo => (
+        {filteredRepos.map((repo) => (
           <div
             key={repo.id}
             className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow hover:shadow-md transition-shadow"
@@ -171,7 +178,7 @@ export default function RepositoryList({ username }: RepositoryListProps) {
                   {repo.language}
                 </span>
               )}
-              
+
               <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                 <FaStar className="w-4 h-4" />
                 <span>{repo.stargazers_count}</span>
@@ -186,5 +193,5 @@ export default function RepositoryList({ username }: RepositoryListProps) {
         ))}
       </div>
     </div>
-  )
-} 
+  );
+}

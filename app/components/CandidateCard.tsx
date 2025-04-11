@@ -1,28 +1,32 @@
-'use client'
+"use client";
 
-import React from 'react'
-import { FaGithub, FaLinkedin } from 'react-icons/fa'
-import { Candidate } from '../types/candidate'
+import React from "react";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { Candidate } from "../types/candidate";
 
 interface CandidateCardProps {
-  candidate: Candidate
-  onEdit: (candidate: Candidate) => void
-  onDelete: (id: string) => void
+  candidate: Candidate;
+  onEdit: (candidate: Candidate) => void;
+  onDelete: (id: string) => void;
 }
 
-const CandidateCard: React.FC<CandidateCardProps> = ({ candidate, onEdit, onDelete }) => {
+const CandidateCard: React.FC<CandidateCardProps> = ({
+  candidate,
+  onEdit,
+  onDelete,
+}) => {
   const getExperienceColor = (experience: string) => {
     switch (experience.toLowerCase()) {
-      case 'senior':
-        return 'badge-success'
-      case 'mid':
-        return 'badge-primary'
-      case 'junior':
-        return 'badge-warning'
+      case "senior":
+        return "badge-success";
+      case "mid":
+        return "badge-primary";
+      case "junior":
+        return "badge-warning";
       default:
-        return 'badge-secondary'
+        return "badge-secondary";
     }
-  }
+  };
 
   return (
     <div className="card hover:shadow-md transition-shadow">
@@ -33,13 +37,17 @@ const CandidateCard: React.FC<CandidateCardProps> = ({ candidate, onEdit, onDele
           </h3>
           <p className="text-gray-600 dark:text-gray-400">{candidate.role}</p>
         </div>
-        <span className={`badge ${getExperienceColor(candidate.experienceLevel)}`}>
+        <span
+          className={`badge ${getExperienceColor(candidate.experienceLevel)}`}
+        >
           {candidate.experienceLevel}
         </span>
       </div>
 
       <div className="mb-4">
-        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tech Stack</h4>
+        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Tech Stack
+        </h4>
         <div className="flex flex-wrap gap-2">
           {candidate.techStack.map((tech) => (
             <span key={tech} className="badge badge-secondary">
@@ -89,7 +97,7 @@ const CandidateCard: React.FC<CandidateCardProps> = ({ candidate, onEdit, onDele
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default CandidateCard 
+export default CandidateCard;
