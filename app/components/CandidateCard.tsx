@@ -76,26 +76,20 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
         </a>
       </div>
 
-      {(onEdit || onDelete) && (
-        <div className="mt-4 flex justify-end gap-2">
-          {onEdit && (
-            <button
-              onClick={() => onEdit(candidate)}
-              className="text-sm text-primary hover:text-primary/80 transition-colors"
-            >
-              Edit
-            </button>
-          )}
-          {onDelete && (
-            <button
-              onClick={() => onDelete(candidate.id)}
-              className="text-sm text-destructive hover:text-destructive/80 transition-colors"
-            >
-              Delete
-            </button>
-          )}
-        </div>
-      )}
+      <div className="mt-4 flex justify-end gap-2">
+        <button
+          onClick={() => onEdit(candidate)}
+          className="text-sm text-primary hover:text-primary/80 transition-colors"
+        >
+          Edit
+        </button>
+        <button
+          onClick={() => onDelete(candidate.id)}
+          className="text-sm text-destructive hover:text-destructive/80 transition-colors"
+        >
+          Delete
+        </button>
+      </div>
     </div>
   );
 };
